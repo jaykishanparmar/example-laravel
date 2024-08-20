@@ -23,6 +23,17 @@ class UserController extends Controller
           return $this->handleException($th);
        }
     }
+
+    public function validateToken(Request $request)
+    {
+      try {
+         return $this->userRepository->checkLogin($request);
+      } catch (\Throwable $th) {
+         return $this->handleException($th);
+      }
+    }
+
+
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();

@@ -16,13 +16,16 @@ use App\Http\Controllers\TaskController;
 |
 */
 
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/registration', [UserController::class, 'registration']);
+Route::group(['middleware' => ['cors']], function () {
+    Route::post('/login', [UserController::class, 'login']);
+    Route::post('/registration', [UserController::class, 'registration']);
+    Route::get('/validate-token/{token}', [UserController::class, 'validateToken']);
 
-Route::group(['middleware' => ['auth:api']], function () {
-    
-    Route::controller(TaskController::class)->prefix('task')->group(function () {
-        Route::get('/', 'getTask');
-        Route::post('/', 'addTask');
+    Route::group(['middleware' => ['auth:api']], function () {
+        
+        Route::controller(TaskController::class)->prefix('task')->group(function () {
+            Route::get('/', 'getTask');
+            Route::post('/', 'addTask');
+        });
     });
 });

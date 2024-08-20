@@ -48,6 +48,24 @@ class UserRepository implements UserRepositoryInterface
             )->toDateTimeString()
         ]);
     }
+    public function checkLogin($request)
+    {
+        return $credentials = $request->token;
+
+        $user = $request->user();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->token;
+        $token->expires_at = Carbon::now()->addWeeks(1);
+        $token->save();
+
+        return response()->json([
+            'access_token' => $tokenResult->accessToken,
+            'token_type' => 'Bearer',
+            'expires_at' => Carbon::parse(
+                $tokenResult->token->expires_at
+            )->toDateTimeString()
+        ]);
+    }
 
     protected function getToken($data)
     {
